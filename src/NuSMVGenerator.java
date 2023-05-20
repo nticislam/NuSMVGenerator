@@ -1,35 +1,43 @@
-
-
 public class NuSMVGenerator {
     public static String generateNuSMVCode(PetriNet petriNet) {
         StringBuilder sb = new StringBuilder();
 
-        // Générer les déclarations des variables NuSMV
         sb.append("MODULE main\n");
+        sb.append("VAR\n");
+        sb.append("s: {");
+        for (int i = 0; i < petriNet.getTransitions().size(); i++) {
+            sb.append("s").append(i);
+            if (i < petriNet.getTransitions().size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("};\n");
+
         for (Place place : petriNet.getPlaces()) {
-            sb.append("VAR ").append(place.getName()).append(": 0..").append(place.getMarking()).append(";\n");
+            sb.append(place.getName()).append(": 0 .. ").append(place.getMarking()).append(";\n");
         }
 
-        // Générer les règles de transition
-        for (Transition transition : petriNet.getTransitions()) {
-            sb.append("TRANS ").append(transition.getName()).append(":\n");
-            sb.append("    case\n");
+        sb.append("ASSIGN\n");
+        sb.append("init(s) := s0;\n");
 
-            // Générer les conditions de tirage de la transition
-            for (String inputPlace : transition.getInputPlaces()) {
-                sb.append("        ").append(inputPlace).append(" = 1 : {").append(inputPlace).append(" := 0, ");
-            }
-
-            // Générer les marquages résultants de la transition
-            for (String outputPlace : transition.getOutputPlaces()) {
-                sb.append(outputPlace).append(" := 1, ");
-            }
-
-            sb.append("TRUE};\n");
+        sb.append("next(s) := case\n");
+        for (int i = 0; i < petriNet.getTransitions().size(); i++) {
+            Transition transition = petriNet.getTransitions().get(i);
+            sb.append("  s = s").append(i).append(": s").append((i + 1) % petriNet.getTransitions().size()).append(";\n");
         }
+        sb.append("esac;\n");
 
-        // Générer la spécification de propriété à vérifier
-        sb.append("SPEC TRUE\n");
+        for (Place place : petriNet.getPlaces()) {
+            sb.append(place.getName()).append(" := case\n");
+            for (int i = 0; i < petriNet.getTransitions().size(); i++) {
+                Transition transition = petriNet.getTransitions().get(i);
+                if (transition.getOutputPlaces().contains(place.getName())) {
+                    sb.append("  s = s").append(i).append(": ").append(place.getMarking()).append(";\n");
+                }
+            }
+            sb.append("  TRUE: 0;\n");
+            sb.append("esac;\n");
+        }
 
         return sb.toString();
     }
