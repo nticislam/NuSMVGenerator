@@ -72,5 +72,8 @@ public class Main {
 
         int totalMarking = petriNet.calculateTotalMarking();
         System.out.println("\n Le marquage total du réseau de Petri est : " + totalMarking);
+
+        petriNet.printMarkingGraph();
+
     }
 }
