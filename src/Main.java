@@ -68,5 +68,9 @@ public class Main {
 
         // Affichage du code NuSMV
         System.out.println(nusmvCode);
+
+
+        int totalMarking = petriNet.calculateTotalMarking();
+        System.out.println("\n Le marquage total du réseau de Petri est : " + totalMarking);
     }
 }

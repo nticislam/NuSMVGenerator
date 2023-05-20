@@ -35,6 +35,7 @@ public class PetriNet {
         return null;
     }
 
+
     public Transition getTransitionByName(String name) {
         for (Transition transition : transitions) {
             if (transition.getName().equals(name)) {
@@ -82,5 +83,13 @@ public class PetriNet {
             }
         }
         return outputPlaces;
+    }
+
+    public int calculateTotalMarking() {
+        int totalMarking = 0;
+        for (Place place : places) {
+            totalMarking += place.getMarking();
+        }
+        return totalMarking;
     }
 }
