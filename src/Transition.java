@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Transition {
+class Transition {
     private String name;
     private List<String> inputPlaces;
     private List<String> outputPlaces;
@@ -10,6 +10,10 @@ public class Transition {
         this.name = name;
         inputPlaces = new ArrayList<>();
         outputPlaces = new ArrayList<>();
+    }
+
+    public void setInputPlaces(List<String> inputPlaces) {
+        this.inputPlaces = inputPlaces;
     }
 
     public void addInputPlace(String placeName) {
@@ -31,4 +35,8 @@ public class Transition {
     public List<String> getOutputPlaces() {
         return outputPlaces;
     }
+    public void setOutputPlaces(List<String> outputPlaces) {
+        this.outputPlaces = outputPlaces;
+    }
+
 }
